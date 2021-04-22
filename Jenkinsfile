@@ -6,14 +6,14 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
-        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'master'
+        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'helm'
       }
     }
 
     stage('Deploy App') {
       steps {
         script {
-          kubernetesDeploy(configs: "nginx.yaml", kubeconfigId: "mykubeconfig")
+          kubernetesDeploy(configs: "ingress-nginx.yaml", kubeconfigId: "mykubeconfig")
         }
       }
     }

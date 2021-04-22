@@ -1,0 +1,24 @@
+---
+- name: Install Ingress-Nginx
+  block:
+    - name: Check that the values.yaml exists
+      stat:
+        path: "{{ role_path }}/files/values.yaml"
+      register: stat_result
+
+    - name: Add Helm repo
+      community.kubernetes.helm_repository:
+        name: ingress-nginx
+        repo_url: "https://kubernetes.github.io/ingress-nginx"
+
+    - name: Install chart
+      community.kubernetes.helm:
+        name: ingress-nginx
+        namespace: ingress-nginx
+        chart_ref: ingress-nginx/ingress-nginx
+        values_files:
+        - "{{ role_path }}/files/values.yaml"
+      register: ingress-nginx
+      # when:
+      #   - is_target_env_allowed is defined and is_target_env_allowed
+  run_once: true

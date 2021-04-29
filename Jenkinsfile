@@ -1,23 +1,36 @@
 pipeline {
-
+  environment {
+    registry = "kevinsulatra/pipeline-demo"
+    registryCredential = 'dockerhub'
+    dockerImage = ''
+  }
   agent any
-
   stages {
-
-    stage('Checkout Source') {
+    stage('Cloning Git') {
       steps {
-        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'master'
+        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'docker-demo'
       }
     }
-
-    stage('Deploy App') {
-      steps {
+    stage('Building image') {
+      steps{
         script {
-          kubernetesDeploy(configs: "nginx.yaml", kubeconfigId: "mykubeconfig")
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
       }
     }
-
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
   }
-
 }

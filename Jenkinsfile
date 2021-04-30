@@ -13,23 +13,29 @@ pipeline {
     }
     stage('Building image') {
       steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        container('docker'){
+          script {
+            dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          }
         }
       }
     }
     stage('Deploy Image') {
       steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push()
+        container('docker'){
+          script {
+            docker.withRegistry( '', registryCredential ) {
+              dockerImage.push()
+            }
           }
         }
       }
     }
     stage('Remove Unused docker image') {
       steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
+        container('docker'){
+          sh "docker rmi $registry:$BUILD_NUMBER"
+        }
       }
     }
   }

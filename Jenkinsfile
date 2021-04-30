@@ -50,29 +50,23 @@ volumes:
     }
     stage('Building image') {
       steps{
-        container('docker'){
           script {
             dockerImage = docker.build registry + ":$BUILD_NUMBER"
           }
-        }
       }
     }
     stage('Deploy Image') {
       steps{
-        container('docker'){
           script {
             docker.withRegistry( '', registryCredential ) {
               dockerImage.push()
             }
           }
-        }
       }
     }
     stage('Remove Unused docker image') {
       steps{
-        container('docker'){
           sh "docker rmi $registry:$BUILD_NUMBER"
-        }
       }
     }
   }

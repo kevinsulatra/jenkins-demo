@@ -45,9 +45,7 @@ volumes:
   stages {
     stage('Cloning Git') {
       steps {
-        container('docker'){
-          git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'docker-demo'
-        }
+        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'docker-demo'
       }
     }
     stage('Building image') {

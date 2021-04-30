@@ -71,8 +71,9 @@ volumes:
       steps{
         container('docker'){
           sh "docker rmi $registry:$BUILD_NUMBER"
-        }
-      }
-    }
-  }
+         }
+       }
+     }
+   }
+ }
 }

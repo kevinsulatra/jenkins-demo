@@ -10,35 +10,27 @@ pipeline {
     yaml """
 apiVersion: v1
 kind: Pod
-metadata:
-labels:
-  component: ci
 spec:
-serviceAccountName: jenkins
-containers:
-- name: jnlp
-  image: jenkins/inbound-agent:4.6-1
-  command:
-  - cat
-  tty: true
-  volumeMounts:
-    - mountPath: "/var/run/docker.sock"
-      name: workspace-volume
-- name: docker
-  image: docker:latest
-  command:
-  - cat
-  tty: true
-  volumeMounts:
-  - mountPath: /var/run/docker.sock
-    name: docker-sock
-volumes:
-  - name: docker-sock
-    hostPath:
-      path: /var/run/docker.sock
-  - name: jenkins
-    persistentVolumeClaim:
-      claimName: jenkins
+  volumes:
+  - name: docker-socket
+    emptyDir: {}
+  containers:
+  - name: docker
+    image: docker:19.03.1
+    command:
+    - sleep
+    args:
+    - 99d
+    volumeMounts:
+    - name: docker-socket
+      mountPath: /var/run
+  - name: docker-daemon
+    image: docker:19.03.1-dind
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: docker-socket
+      mountPath: /var/run
     """
     }
   }
@@ -52,7 +44,7 @@ volumes:
       steps{
         container('docker'){
           script {
-            dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            dockerImage = docker.build "$registry:$BUILD_NUMBER"
           }
         }
       }

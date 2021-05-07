@@ -40,7 +40,7 @@ spec:
         git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'docker-demo'
       }
     }
-    stage('Building image') {
+    stage('Building Image') {
       steps{
         container('docker'){
           script {
@@ -49,7 +49,13 @@ spec:
         }
       }
     }
-    stage('Deploy Image') {
+    stage('Checking Image'){
+      steps {
+        writeFile file: 'anchore_images', text: 'docker.io/kevinsulatra/pipeline-demo'
+        achore name: 'anchore_images'
+      }
+    }
+    stage('Deploying Image') {
       steps{
         container('docker'){
           script {

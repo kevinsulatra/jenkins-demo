@@ -52,7 +52,7 @@ spec:
     stage('Checking Image'){
       steps {
         writeFile file: 'anchore_images', text: 'docker.io/kevinsulatra/pipeline-demo'
-        achore name: 'anchore_images'
+        anchore name: 'anchore_images'
       }
     }
     stage('Deploying Image') {

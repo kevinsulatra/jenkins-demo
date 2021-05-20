@@ -51,7 +51,7 @@ spec:
     }
     stage('Checking Image'){
       steps {
-        writeFile file: 'anchore_images', text: 'hub.docker.com/r/kevinsulatra/pipeline-demo'
+        writeFile file: 'anchore_images', text: 'hub.docker.com/r/kevinsulatra/pipeline-demo:1'
         anchore name: 'anchore_images'
       }
     }

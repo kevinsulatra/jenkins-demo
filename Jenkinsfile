@@ -44,14 +44,14 @@ spec:
       steps{
         container('docker'){
           script {
-            dockerImage = docker.build "$registry:$BUILD_NUMBER"
+            dockerImage = docker.build "$registry:latest"
           }
         }
       }
     }
     stage('Checking Image'){
       steps {
-        writeFile file: 'anchore_images', text: 'docker.io/kevinsulatra/pipeline-demo:1'
+        writeFile file: 'anchore_images', text: 'docker.io/kevinsulatra/pipeline-demo:latest'
         anchore name: 'anchore_images'
       }
     }
@@ -66,12 +66,12 @@ spec:
         }
       }
     }
-    stage('Remove Unused docker image') {
-      steps{
-        container('docker'){
-          sh "docker rmi $registry:$BUILD_NUMBER"
-        }
-      }
-    }
-  }
-}
+//     stage('Remove Unused docker image') {
+//       steps{
+//         container('docker'){
+//           sh "docker rmi $registry:$BUILD_NUMBER"
+//         }
+//       }
+//     }
+//   }
+// }

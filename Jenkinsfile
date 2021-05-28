@@ -1,23 +1,20 @@
 pipeline {
-
   agent any
 
   stages {
-
-    stage('Checkout Source') {
+    stage('Cloning Git') {
       steps {
-        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'master'
+        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'helm-demo'
       }
     }
-
-    stage('Deploy App') {
+    stage('Add Helm repo'){
       steps {
-        script {
-          kubernetesDeploy(configs: "nginx.yaml", kubeconfigId: "mykubeconfig")
-        }
+        sh "helm repo add library https://core.harbor.dev.h.fmlabs.xyz/chartrepo/library"
       }
     }
-
+    stage('Push Helm Chart'){
+      steps {
+        sh "helm push demo-chart library"
+      }
+    }
   }
-
-}

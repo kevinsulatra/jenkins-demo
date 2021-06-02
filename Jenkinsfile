@@ -4,21 +4,20 @@ pipeline {
   stages {
     stage('Cloning Git') {
       steps {
-        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'helm-demo'
+        git url:'https://github.com/kevinsulatra/jenkins-demo.git', branch:'docker-demo'
       }
     }
-    stage('Add Helm Repo'){
-      steps {
-        sh "helm repo add library https://core.harbor.dev.h.fmlabs.xyz/chartrepo/library"
+    
+    stage('Package Helm Chart') {
+      steps{
+        sh 'helm package .'
       }
     }
-    stage('Update Helm Repo')
+
+    stage('Push to Helm Repo') {
       steps {
-        sh "helm repo update"
-      }
-    stage('Push Helm Chart'){
-      steps {
-        sh "helm push demo-chart library"
+        sh 'curl --data-binary "@demo-chart-0.1.0.tgz" https://core.harbor.dev.h.fmlabs.xyz/chartrepo/library'
       }
     }
   }
+}
